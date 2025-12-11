@@ -153,9 +153,19 @@ cd core
 
 2. Configure environment variables in `core/.env`:
 
-```
-OPENAI_API_KEY=your_openai_api_key
-```
+   Generate a secure .env file with new secrets:
+
+   ```bash
+   make setup-env
+   ```
+
+   Then open `.env` to configure your API keys.
+
+   If using OpenRouter or a custom OpenAI endpoint:
+   ```
+   OPENAI_BASE_URL=https://openrouter.ai/api/v1
+   OPENAI_API_KEY=your_openrouter_key
+   ```
 
 3. Start the service
 

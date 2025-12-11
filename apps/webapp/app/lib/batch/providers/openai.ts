@@ -28,10 +28,17 @@ export class OpenAIBatchProvider extends BaseBatchProvider {
 
   private openaiClient: OpenAI;
 
-  constructor(options?: { apiKey?: string }) {
+  constructor(options?: { apiKey?: string; baseURL?: string }) {
     super();
+    const baseURL =
+      options?.baseURL || process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+    const apiKey = options?.apiKey || process.env.OPENAI_API_KEY;
+
+    logger.info(`Initializing OpenAI client with baseURL: ${baseURL}`);
+
     this.openaiClient = new OpenAI({
-      apiKey: options?.apiKey || process.env.OPENAI_API_KEY,
+      apiKey,
+      baseURL,
     });
   }
 
@@ -51,9 +58,9 @@ export class OpenAIBatchProvider extends BaseBatchProvider {
           model,
           messages: request.systemPrompt
             ? [
-                { role: "system" as const, content: request.systemPrompt },
-                ...request.messages,
-              ]
+              { role: "system" as const, content: request.systemPrompt },
+              ...request.messages,
+            ]
             : request.messages,
           ...request.options,
           // Add response_format for structured output if schema provided
@@ -182,10 +189,10 @@ export class OpenAIBatchProvider extends BaseBatchProvider {
                   response: processedResponse,
                   error: result.error
                     ? {
-                        code: result.error.code || "unknown",
-                        message: result.error.message || "Unknown error",
-                        type: "api_error" as const,
-                      }
+                      code: result.error.code || "unknown",
+                      message: result.error.message || "Unknown error",
+                      type: "api_error" as const,
+                    }
                     : undefined,
                 };
               } catch (parseError) {
