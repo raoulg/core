@@ -14,5 +14,9 @@ cp packages/database/prisma/schema.prisma apps/webapp/prisma/
 # cp node_modules/@prisma/engines/*.node apps/webapp/prisma/
 
 cd /core/apps/webapp
+
+# Seed integrations automatically
+pnpm run seed:integrations
+
 # exec dumb-init pnpm run start:local
 NODE_PATH='/core/node_modules/.pnpm/node_modules' exec dumb-init node --max-old-space-size=8192 ./server.js

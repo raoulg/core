@@ -16,3 +16,13 @@ setup-env:
 	sed "s/NEO4J_PASSWORD=.*/NEO4J_PASSWORD=$$NEO4J_PWD/" .env > .env.tmp && mv .env.tmp .env; \
 	sed "s/NEO4J_AUTH=.*/NEO4J_AUTH=neo4j\/$$NEO4J_PWD/" .env > .env.tmp && mv .env.tmp .env
 	@echo "Secrets generated and updated in .env successfully."
+	@if [ -f hosting/docker/.env ]; then \
+		echo "Updating secrets in hosting/docker/.env..."; \
+		sed "s/SESSION_SECRET=.*/SESSION_SECRET=$$(grep SESSION_SECRET .env | cut -d= -f2)/" hosting/docker/.env > hosting/docker/.env.tmp && mv hosting/docker/.env.tmp hosting/docker/.env; \
+		sed "s/ENCRYPTION_KEY=.*/ENCRYPTION_KEY=$$(grep ENCRYPTION_KEY .env | cut -d= -f2)/" hosting/docker/.env > hosting/docker/.env.tmp && mv hosting/docker/.env.tmp hosting/docker/.env; \
+		sed "s/MAGIC_LINK_SECRET=.*/MAGIC_LINK_SECRET=$$(grep MAGIC_LINK_SECRET .env | cut -d= -f2)/" hosting/docker/.env > hosting/docker/.env.tmp && mv hosting/docker/.env.tmp hosting/docker/.env; \
+		NEO4J_PWD=$$(grep NEO4J_PASSWORD .env | cut -d= -f2); \
+		sed "s/NEO4J_PASSWORD=.*/NEO4J_PASSWORD=$$NEO4J_PWD/" hosting/docker/.env > hosting/docker/.env.tmp && mv hosting/docker/.env.tmp hosting/docker/.env; \
+		sed "s/NEO4J_AUTH=.*/NEO4J_AUTH=neo4j\/$$NEO4J_PWD/" hosting/docker/.env > hosting/docker/.env.tmp && mv hosting/docker/.env.tmp hosting/docker/.env; \
+		echo "Secrets updated in hosting/docker/.env successfully."; \
+	fi
